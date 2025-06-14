@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Chatbot AI sederhana menggunakan Node.js dan Express.">
+  <meta name="keywords" content="chatbot, AI, Node.js, Express, JavaScript">
+  <meta name="author" content="Muhammad Fikri">
+  
+  <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon/favicon.ico" type="image/x-icon" />
+
+
+  <title>Chatbot AI</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    #chat {
+      max-height: 400px;
+      overflow-y: scroll;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background-color: white;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    .chat-entry {
+      margin-bottom: 10px;
+    }
+    .chat-entry p {
+      margin: 0;
+    }
+    .chat-entry .user {
+      font-weight: bold;
+      color: #007bff;
+    }
+    .chat-entry .ai {
+      font-weight: bold;
+      color: #28a745;
+    }
+    #input {
+      border-radius: 25px;
+    }
+    button {
+      border-radius: 25px;
+    }
+    .input-group {
+      margin-bottom: 10px; 
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Chatbot Sederhana</h1>
+
+    
+    <div class="input-group">
+      <input id="input" type="text" class="form-control" placeholder="Ketik pesan..." aria-label="Ketik pesan...">
+      <button class="btn btn-primary" onclick="send()">Kirim</button>
+      <button class="btn btn-danger" onclick="reset()">Reset</button>
+    </div>
+    
+    <div id="chat" class="mb-3"></div>
+  </div>
+
+  <!-- Mengimpor Bootstrap 5 JS dan dependensinya (Popper.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+  <script>
+    async function send() {
+      const msg = document.getElementById('input').value;
+      if (!msg) return; 
+
+      const res = await fetch('/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+
+      const data = await res.json();
+      document.getElementById('chat').innerHTML += `
+        <div class="chat-entry">
+          <p class="user">Anda: </p><p>${msg}</p>
+        </div>
+        <div class="chat-entry">
+          <p class="ai">AI: </p><p>${data.reply}</p>
+        </div>
+      `;
+      
+      // Scroll ke chat paling bawah setelah pesan baru
+      document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+
+      // Kosongkan input
+      document.getElementById('input').value = '';
+    }
+
+    function reset() {
+      // Mengosongkan input dan textarea
+      document.getElementById('input').value = '';
+      document.getElementById('chat').value = '';
+      
+    }
+  </script>
+
+</body>
+</html>
